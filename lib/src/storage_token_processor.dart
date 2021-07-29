@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model/auth_session_info.dart';
 import 'model/storage_session_info.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+
+final bool _isRunningTest = Platform.environment
+    .containsKey('FLUTTER_TEST'); /* cannot use storage during running tests */
 
 abstract class StorageTokenProcessor {
   void save({required AuthSessionInterface sessionInfo, int appType});
@@ -30,6 +34,9 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
   }
 
   Future<void> _loadFromStorage() async {
+    if (_isRunningTest) {
+      return;
+    }
     String? results;
     if (kIsWeb) {
       var prefs = await SharedPreferences.getInstance();
@@ -45,6 +52,9 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
   }
 
   void _saveToKeychain() async {
+    if (_isRunningTest) {
+      return;
+    }
     var encoded = jsonEncode(_sessionInfos);
     if (kIsWeb) {
       var prefs = await SharedPreferences.getInstance();
@@ -63,6 +73,9 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
 
   @override
   void removeAllSessionInfos() async {
+    if (_isRunningTest) {
+      return;
+    }
     _sessionInfos.clear();
     if (kIsWeb) {
       var prefs = await SharedPreferences.getInstance();
@@ -80,6 +93,9 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
 
   @override
   void save({required AuthSessionInterface sessionInfo, int appType = 0}) {
+    if (_isRunningTest) {
+      return;
+    }
     var existSession =
         _sessionInfos.firstWhereOrNull((element) => element.appType == appType);
     if (existSession == null) {
