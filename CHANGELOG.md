@@ -15,3 +15,6 @@ Cannot use secure storage during running tests
 
 ## 0.0.5
 - Fix jsonEncode at AuthSessionInfo
+
+## 0.0.6
+- add future to interface

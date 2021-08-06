@@ -1,6 +1,6 @@
 name: flutter_cpnetworking_service
 description: A netowrking wrapper which using dio and flutter_secure_storage(ios, android)/shared_preferences(web) to handle storage token or sensitive data in general, and use token as authorization info when requesting to http connection.
-version: 0.0.5
+version: 0.0.6
 homepage: https://github.com/althurzard/flutter_cpnetworking_service
 
 environment:

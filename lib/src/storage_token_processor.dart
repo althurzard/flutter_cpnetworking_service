@@ -11,9 +11,9 @@ final bool _isRunningTest = Platform.environment
     .containsKey('FLUTTER_TEST'); /* cannot use storage during running tests */
 
 abstract class StorageTokenProcessor {
-  void save({required AuthSessionInterface sessionInfo, int appType});
-  void removeSessionInfo({int appType});
-  void removeAllSessionInfos();
+  Future<void> save({required AuthSessionInterface sessionInfo, int appType});
+  Future<void> removeSessionInfo({int appType});
+  Future<void> removeAllSessionInfos();
   String getCurrentToken({int appType});
   AuthSessionInterface? getCurrentSessionInfo({int appType});
 }
