@@ -5,11 +5,11 @@ enum RequestType { post, get }
 abstract class BaseAPIServiceInterface {
   late Map<String, String> headers;
   late String baseURL;
+  late String encoding;
 }
 
 abstract class InputServiceInterface extends BaseAPIServiceInterface {
   late String path;
-  late String encoding;
   late RequestType requestType;
   String get fullPath => '$baseURL$path';
   late Map<String, String> queryParameters;

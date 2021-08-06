@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'error.dart';
 import 'storage_token_processor.dart';
 import 'api_input_service.dart';
+import 'dart:convert';
 
 abstract class NetworkConfigurable extends BaseAPIServiceInterface {
   late String refreshTokenPath;
@@ -18,7 +20,13 @@ class DefaultNetworkConfigurable implements NetworkConfigurable {
   String refreshTokenPath;
 
   DefaultNetworkConfigurable(
-      {this.baseURL = '', this.headers = const {}, this.refreshTokenPath = ''});
+      {this.baseURL = '',
+      this.headers = const {'accept': '*/*'},
+      this.refreshTokenPath = '',
+      this.encoding = 'application/json'});
+
+  @override
+  String encoding;
 }
 
 class APIProvider {
@@ -34,15 +42,19 @@ class APIProvider {
       {required this.networkConfiguration,
       required this.storageTokenProcessor,
       this.interceptor}) {
-    var interceptor = this.interceptor ??
-        InterceptorsWrapper(
-            onRequest: _onRequest, onError: _onError, onResponse: _onResponse);
-    _dio.interceptors.add(interceptor);
+    _dio.interceptors.add(InterceptorsWrapper(
+        onRequest: _onRequest, onError: _onError, onResponse: _onResponse));
+    if (this.interceptor != null) {
+      _dio.interceptors.add(this.interceptor!);
+    }
     _dio.options.baseUrl = networkConfiguration.baseURL;
   }
 
   void _onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // TODO: handle something(token, headers, etc)
+    if (kDebugMode) print("""REQUEST:
+    ${cURLRepresentation(options)}
+    """);
     return handler.next(options);
   }
 
@@ -58,7 +70,8 @@ class APIProvider {
 
   Future<Response> request({required InputServiceInterface input}) async {
     _dio.options.headers = _defaultHeaders(input.headers);
-    _dio.options.contentType = input.encoding;
+    _dio.options.contentType =
+        input.encoding.isEmpty ? networkConfiguration.encoding : input.encoding;
     Uri? fullPath;
     if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
       fullPath = Uri.parse(input.fullPath)
@@ -103,4 +116,25 @@ class APIProvider {
 
   Map<String, String> _defaultHeaders(Map<String, String> otherHeaders) =>
       {...networkConfiguration.headers, ...otherHeaders};
+
+  String cURLRepresentation(RequestOptions options) {
+    List<String> components = ["\$ curl -i"];
+    if (options.method.toUpperCase() == "GET") {
+      components.add("-X ${options.method}");
+    }
+
+    options.headers.forEach((k, v) {
+      if (k != "Cookie") {
+        components.add("-H \"$k: $v\"");
+      }
+    });
+
+    var data = json.encode(options.data);
+    data = data.replaceAll('\"', '\\\"');
+    components.add("-d \"$data\"");
+
+    components.add("\"${options.uri.toString()}\"");
+
+    return components.join('\\\n\t');
+  }
 }

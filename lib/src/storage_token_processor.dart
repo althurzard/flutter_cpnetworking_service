@@ -51,7 +51,7 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
     }
   }
 
-  void _saveToKeychain() async {
+  Future<void> _saveToKeychain() async {
     if (_isRunningTest) {
       return;
     }
@@ -72,7 +72,7 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
   }
 
   @override
-  void removeAllSessionInfos() async {
+  Future<void> removeAllSessionInfos() async {
     if (_isRunningTest) {
       return;
     }
@@ -86,13 +86,14 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
   }
 
   @override
-  void removeSessionInfo({int? appType}) {
+  Future<void> removeSessionInfo({int? appType}) async {
     _sessionInfos.removeWhere((element) => element.appType == appType);
-    _saveToKeychain();
+    await _saveToKeychain();
   }
 
   @override
-  void save({required AuthSessionInterface sessionInfo, int appType = 0}) {
+  Future<void> save(
+      {required AuthSessionInterface sessionInfo, int appType = 0}) async {
     if (_isRunningTest) {
       return;
     }
@@ -106,7 +107,7 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
       _sessionInfos
           .add(StorageSessionInfo(appType: appType, sessionInfo: sessionInfo));
     }
-    _saveToKeychain();
+    await _saveToKeychain();
   }
 
   @override

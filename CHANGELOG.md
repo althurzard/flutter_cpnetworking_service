@@ -7,3 +7,11 @@ Update README
 
 ## 0.0.3
 Cannot use secure storage during running tests
+
+## 0.0.4
+- Implement CURL for debug mode
+- Add others parameters to AuthSessionInfo 
+- Implement encoding for NetworkConfigurable
+
+## 0.0.5
+- Fix jsonEncode at AuthSessionInfo
