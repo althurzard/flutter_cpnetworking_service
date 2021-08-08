@@ -21,3 +21,6 @@ Cannot use secure storage during running tests
 
 ## 0.0.7
 - fix Platform.environment for web
+
+## 0.0.8
+- fix query parameters to dynamic

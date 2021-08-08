@@ -12,7 +12,7 @@ abstract class InputServiceInterface extends BaseAPIServiceInterface {
   late String path;
   late RequestType requestType;
   String get fullPath => '$baseURL$path';
-  late Map<String, String> queryParameters;
+  late Map<String, dynamic> queryParameters;
 }
 
 class DefaultInputService implements InputServiceInterface {
@@ -32,7 +32,7 @@ class DefaultInputService implements InputServiceInterface {
   RequestType requestType = RequestType.get;
 
   @override
-  Map<String, String> queryParameters = {};
+  Map<String, dynamic> queryParameters = {};
 
   DefaultInputService(
       {this.baseURL = '',
