@@ -18,3 +18,6 @@ Cannot use secure storage during running tests
 
 ## 0.0.6
 - add future to interface
+
+## 0.0.7
+- fix Platform.environment for web

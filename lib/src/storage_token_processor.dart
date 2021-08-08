@@ -7,8 +7,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-final bool _isRunningTest = Platform.environment
-    .containsKey('FLUTTER_TEST'); /* cannot use storage during running tests */
+bool get _isRunningTest {
+  if (kIsWeb) {
+    return false;
+  } else {
+    return Platform.environment.containsKey('FLUTTER_TEST');
+  }
+} /* cannot use storage during running tests */
 
 abstract class StorageTokenProcessor {
   Future<void> save({required AuthSessionInterface sessionInfo, int appType});
