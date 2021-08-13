@@ -73,14 +73,18 @@ class APIProvider {
     _dio.options.contentType =
         input.encoding.isEmpty ? networkConfiguration.encoding : input.encoding;
     Uri? fullPath;
-    if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
-      fullPath = Uri.parse(input.fullPath)
-          .replace(queryParameters: input.queryParameters);
-    }
+
     switch (input.requestType) {
       case RequestType.get:
+        if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
+          fullPath = Uri.parse(input.fullPath)
+              .replace(queryParameters: input.queryParameters);
+        }
         return _dioGet(uri: fullPath, input: input);
       case RequestType.post:
+        if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
+          fullPath = Uri.parse(input.fullPath);
+        }
         return _dioPost(uri: fullPath, input: input);
     }
   }
@@ -104,7 +108,7 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.postUri(uri);
+        response = await _dio.postUri(uri, data: input?.queryParameters);
       } else {
         response = await _dio.post(input!.path, data: input.queryParameters);
       }

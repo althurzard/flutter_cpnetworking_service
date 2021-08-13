@@ -24,3 +24,6 @@ Cannot use secure storage during running tests
 
 ## 0.0.8
 - fix query parameters to dynamic
+
+## 0.0.9
+- fix postUri with query parameters
