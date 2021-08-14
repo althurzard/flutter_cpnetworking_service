@@ -27,3 +27,6 @@ Cannot use secure storage during running tests
 
 ## 0.0.9
 - fix postUri with query parameters
+
+## 0.1.0
+- default input query parameters are optional
