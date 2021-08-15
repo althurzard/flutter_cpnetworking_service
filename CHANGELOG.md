@@ -30,3 +30,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.0
 - default input query parameters are optional
+
+## 0.1.1
+- Implement put,delete repsonseType

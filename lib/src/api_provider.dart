@@ -77,8 +77,10 @@ class APIProvider {
     switch (input.requestType) {
       case RequestType.get:
         if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
-          fullPath = Uri.parse(input.fullPath)
-              .replace(queryParameters: input.queryParameters);
+          fullPath = Uri.parse(input.fullPath);
+          if (input.queryParameters != null) {
+            fullPath..replace(queryParameters: input.queryParameters);
+          }
         }
         return _dioGet(uri: fullPath, input: input);
       case RequestType.post:
@@ -86,6 +88,16 @@ class APIProvider {
           fullPath = Uri.parse(input.fullPath);
         }
         return _dioPost(uri: fullPath, input: input);
+      case RequestType.put:
+        if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
+          fullPath = Uri.parse(input.fullPath);
+        }
+        return _dioPut(uri: fullPath, input: input);
+      case RequestType.delete:
+        if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
+          fullPath = Uri.parse(input.fullPath);
+        }
+        return _dioDelete(uri: fullPath, input: input);
     }
   }
 
@@ -111,6 +123,34 @@ class APIProvider {
         response = await _dio.postUri(uri, data: input?.queryParameters);
       } else {
         response = await _dio.post(input!.path, data: input.queryParameters);
+      }
+      return Future.value(response);
+    } on DioError catch (e) {
+      return Future.error(AppError.withDioError(e));
+    }
+  }
+
+  Future<Response> _dioPut({Uri? uri, InputServiceInterface? input}) async {
+    Response response;
+    try {
+      if (uri != null) {
+        response = await _dio.putUri(uri, data: input?.queryParameters);
+      } else {
+        response = await _dio.put(input!.path, data: input.queryParameters);
+      }
+      return Future.value(response);
+    } on DioError catch (e) {
+      return Future.error(AppError.withDioError(e));
+    }
+  }
+
+  Future<Response> _dioDelete({Uri? uri, InputServiceInterface? input}) async {
+    Response response;
+    try {
+      if (uri != null) {
+        response = await _dio.deleteUri(uri, data: input?.queryParameters);
+      } else {
+        response = await _dio.delete(input!.path, data: input.queryParameters);
       }
       return Future.value(response);
     } on DioError catch (e) {
