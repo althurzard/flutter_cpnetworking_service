@@ -33,3 +33,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.1
 - Implement put,delete repsonseType
+
+## 0.1.2
+- Implement interceptor for network configurable

@@ -7,6 +7,7 @@ import 'dart:convert';
 
 abstract class NetworkConfigurable extends BaseAPIServiceInterface {
   late String refreshTokenPath;
+  Interceptor? interceptor;
 }
 
 class DefaultNetworkConfigurable implements NetworkConfigurable {
@@ -23,10 +24,14 @@ class DefaultNetworkConfigurable implements NetworkConfigurable {
       {this.baseURL = '',
       this.headers = const {'accept': '*/*'},
       this.refreshTokenPath = '',
-      this.encoding = 'application/json'});
+      this.encoding = 'application/json',
+      this.interceptor});
 
   @override
   String encoding;
+
+  @override
+  Interceptor? interceptor;
 }
 
 class APIProvider {
@@ -46,6 +51,9 @@ class APIProvider {
         onRequest: _onRequest, onError: _onError, onResponse: _onResponse));
     if (this.interceptor != null) {
       _dio.interceptors.add(this.interceptor!);
+    }
+    if (this.networkConfiguration.interceptor != null) {
+      _dio.interceptors.add(this.networkConfiguration.interceptor!);
     }
     _dio.options.baseUrl = networkConfiguration.baseURL;
   }
