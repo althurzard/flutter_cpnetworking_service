@@ -36,3 +36,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.2
 - Implement interceptor for network configurable
+
+## 0.1.3
+- Support form data

@@ -128,9 +128,11 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.postUri(uri, data: input?.queryParameters);
+        response = await _dio.postUri(uri,
+            data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.post(input!.path, data: input.queryParameters);
+        response = await _dio.post(input!.path,
+            data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
     } on DioError catch (e) {
