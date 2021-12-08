@@ -144,9 +144,11 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.putUri(uri, data: input?.queryParameters);
+        response = await _dio.putUri(uri,
+            data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.put(input!.path, data: input.queryParameters);
+        response = await _dio.put(input!.path,
+            data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
     } on DioError catch (e) {
@@ -158,9 +160,11 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.deleteUri(uri, data: input?.queryParameters);
+        response = await _dio.deleteUri(uri,
+            data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.delete(input!.path, data: input.queryParameters);
+        response = await _dio.delete(input!.path,
+            data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
     } on DioError catch (e) {

@@ -39,3 +39,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.3
 - Support form data
+
+## 0.1.4
+- Support form data for put/delete
