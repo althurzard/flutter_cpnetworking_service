@@ -187,12 +187,14 @@ class APIProvider {
       }
     });
 
+    if (options.data is FormData) {
+      components.add("\"${options.uri.toString()}\"");
+      return components.join('\\\n\t');
+    }
     var data = json.encode(options.data);
     data = data.replaceAll('\"', '\\\"');
     components.add("-d \"$data\"");
-
     components.add("\"${options.uri.toString()}\"");
-
     return components.join('\\\n\t');
   }
 }

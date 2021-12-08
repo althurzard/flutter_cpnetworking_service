@@ -42,3 +42,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.4
 - Support form data for put/delete
+
+## 0.1.5
+- Fix debug formData
