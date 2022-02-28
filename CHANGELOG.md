@@ -45,3 +45,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.5
 - Fix debug formData
+
+## 0.1.6
+- Fix crash on FlutterSecureStorage

@@ -47,7 +47,12 @@ class DefaultStorageTokenProcessor implements StorageTokenProcessor {
       var prefs = await SharedPreferences.getInstance();
       results = prefs.getString(saveAuthSessionKey);
     } else {
-      results = await _storage.read(key: saveAuthSessionKey);
+      try {
+        results = await _storage.read(key: saveAuthSessionKey);
+      } catch (_) {
+        // Workaround for https://github.com/mogol/flutter_secure_storage/issues/43
+        await _storage.deleteAll();
+      }
     }
     if (results != null && results.isNotEmpty) {
       List<dynamic> parsedJson = jsonDecode(results);
