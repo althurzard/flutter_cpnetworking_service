@@ -45,6 +45,7 @@ class AppError implements Exception {
   String? message = '';
   AppErrorType? type = AppErrorType.serverError;
   ErrorCode? errorCode = ErrorCode.badRequest;
+  DioError? dioError;
   AppError({this.message, this.type, this.errorCode});
 
   factory AppError.fromJson(Map<String, dynamic> json) {
@@ -79,6 +80,7 @@ class AppError implements Exception {
             message: e.message,
             type: type,
             errorCode: ErrorCodeHelper.create(e.response?.statusCode));
+    error.dioError = e;
     return error;
   }
 }

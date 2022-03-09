@@ -48,3 +48,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.6
 - Fix crash on FlutterSecureStorage
+
+## 0.1.7
+- Return DioError for error response
