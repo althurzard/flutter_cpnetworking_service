@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'error.dart';
@@ -35,7 +36,7 @@ class DefaultNetworkConfigurable implements NetworkConfigurable {
 }
 
 class APIProvider {
-  final _dio = Dio();
+  final dio = Dio();
 
   NetworkConfigurable networkConfiguration;
 
@@ -47,22 +48,24 @@ class APIProvider {
       {required this.networkConfiguration,
       required this.storageTokenProcessor,
       this.interceptor}) {
-    _dio.interceptors.add(InterceptorsWrapper(
+    dio.interceptors.add(InterceptorsWrapper(
         onRequest: _onRequest, onError: _onError, onResponse: _onResponse));
-    if (this.interceptor != null) {
-      _dio.interceptors.add(this.interceptor!);
+    if (interceptor != null) {
+      dio.interceptors.add(interceptor!);
     }
-    if (this.networkConfiguration.interceptor != null) {
-      _dio.interceptors.add(this.networkConfiguration.interceptor!);
+    if (networkConfiguration.interceptor != null) {
+      dio.interceptors.add(networkConfiguration.interceptor!);
     }
-    _dio.options.baseUrl = networkConfiguration.baseURL;
+    dio.options.baseUrl = networkConfiguration.baseURL;
   }
 
   void _onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     // TODO: handle something(token, headers, etc)
-    if (kDebugMode) print("""REQUEST:
+    if (kDebugMode) {
+      log('''REQUEST:
     ${cURLRepresentation(options)}
-    """);
+    ''');
+    }
     return handler.next(options);
   }
 
@@ -77,8 +80,8 @@ class APIProvider {
   }
 
   Future<Response> request({required InputServiceInterface input}) async {
-    _dio.options.headers = _defaultHeaders(input.headers);
-    _dio.options.contentType =
+    dio.options.headers = _defaultHeaders(input.headers);
+    dio.options.contentType =
         input.encoding.isEmpty ? networkConfiguration.encoding : input.encoding;
     Uri? fullPath;
 
@@ -87,36 +90,36 @@ class APIProvider {
         if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
           fullPath = Uri.parse(input.fullPath);
           if (input.queryParameters != null) {
-            fullPath..replace(queryParameters: input.queryParameters);
+            fullPath.replace(queryParameters: input.queryParameters);
           }
         }
-        return _dioGet(uri: fullPath, input: input);
+        return dioGet(uri: fullPath, input: input);
       case RequestType.post:
         if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
           fullPath = Uri.parse(input.fullPath);
         }
-        return _dioPost(uri: fullPath, input: input);
+        return dioPost(uri: fullPath, input: input);
       case RequestType.put:
         if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
           fullPath = Uri.parse(input.fullPath);
         }
-        return _dioPut(uri: fullPath, input: input);
+        return dioPut(uri: fullPath, input: input);
       case RequestType.delete:
         if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
           fullPath = Uri.parse(input.fullPath);
         }
-        return _dioDelete(uri: fullPath, input: input);
+        return dioDelete(uri: fullPath, input: input);
     }
   }
 
-  Future<Response> _dioGet({Uri? uri, InputServiceInterface? input}) async {
+  Future<Response> dioGet({Uri? uri, InputServiceInterface? input}) async {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.getUri(uri);
+        response = await dio.getUri(uri);
       } else {
         response =
-            await _dio.get(input!.path, queryParameters: input.queryParameters);
+            await dio.get(input!.path, queryParameters: input.queryParameters);
       }
       return Future.value(response);
     } on DioError catch (e) {
@@ -124,14 +127,14 @@ class APIProvider {
     }
   }
 
-  Future<Response> _dioPost({Uri? uri, InputServiceInterface? input}) async {
+  Future<Response> dioPost({Uri? uri, InputServiceInterface? input}) async {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.postUri(uri,
+        response = await dio.postUri(uri,
             data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.post(input!.path,
+        response = await dio.post(input!.path,
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
@@ -140,14 +143,14 @@ class APIProvider {
     }
   }
 
-  Future<Response> _dioPut({Uri? uri, InputServiceInterface? input}) async {
+  Future<Response> dioPut({Uri? uri, InputServiceInterface? input}) async {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.putUri(uri,
+        response = await dio.putUri(uri,
             data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.put(input!.path,
+        response = await dio.put(input!.path,
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
@@ -156,14 +159,14 @@ class APIProvider {
     }
   }
 
-  Future<Response> _dioDelete({Uri? uri, InputServiceInterface? input}) async {
+  Future<Response> dioDelete({Uri? uri, InputServiceInterface? input}) async {
     Response response;
     try {
       if (uri != null) {
-        response = await _dio.deleteUri(uri,
+        response = await dio.deleteUri(uri,
             data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await _dio.delete(input!.path,
+        response = await dio.delete(input!.path,
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
@@ -176,25 +179,25 @@ class APIProvider {
       {...networkConfiguration.headers, ...otherHeaders};
 
   String cURLRepresentation(RequestOptions options) {
-    List<String> components = ["\$ curl -i"];
-    if (options.method.toUpperCase() == "GET") {
-      components.add("-X ${options.method}");
+    var components = <String>['\$ curl -i'];
+    if (options.method.toUpperCase() == 'GET') {
+      components.add('-X ${options.method}');
     }
 
     options.headers.forEach((k, v) {
-      if (k != "Cookie") {
-        components.add("-H \"$k: $v\"");
+      if (k != 'Cookie') {
+        components.add('-H \"$k: $v\"');
       }
     });
 
     if (options.data is FormData) {
-      components.add("\"${options.uri.toString()}\"");
+      components.add('\"${options.uri.toString()}\"');
       return components.join('\\\n\t');
     }
     var data = json.encode(options.data);
     data = data.replaceAll('\"', '\\\"');
-    components.add("-d \"$data\"");
-    components.add("\"${options.uri.toString()}\"");
+    components.add('-d \"$data\"');
+    components.add('\"${options.uri.toString()}\"');
     return components.join('\\\n\t');
   }
 }

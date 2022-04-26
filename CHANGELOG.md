@@ -51,3 +51,6 @@ Cannot use secure storage during running tests
 
 ## 0.1.7
 - Return DioError for error response
+
+## 0.1.8
+- Change print to log
