@@ -123,7 +123,11 @@ class APIProvider {
       }
       return Future.value(response);
     } on DioError catch (e) {
-      return Future.error(AppError.withDioError(e));
+      return Future.error(AppError(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: e.error,
+          type: e.type));
     }
   }
 
@@ -139,7 +143,11 @@ class APIProvider {
       }
       return Future.value(response);
     } on DioError catch (e) {
-      return Future.error(AppError.withDioError(e));
+      return Future.error(AppError(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: e.error,
+          type: e.type));
     }
   }
 
@@ -155,7 +163,11 @@ class APIProvider {
       }
       return Future.value(response);
     } on DioError catch (e) {
-      return Future.error(AppError.withDioError(e));
+      return Future.error(AppError(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: e.error,
+          type: e.type));
     }
   }
 
@@ -171,7 +183,11 @@ class APIProvider {
       }
       return Future.value(response);
     } on DioError catch (e) {
-      return Future.error(AppError.withDioError(e));
+      return Future.error(AppError(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: e.error,
+          type: e.type));
     }
   }
 

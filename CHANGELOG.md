@@ -54,3 +54,7 @@ Cannot use secure storage during running tests
 
 ## 0.1.8
 - Change print to log
+
+## 0.2.0
+- Upgrade flutter
+- Refactor AppError
