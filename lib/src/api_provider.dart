@@ -109,6 +109,11 @@ class APIProvider {
           fullPath = Uri.parse(input.fullPath);
         }
         return dioDelete(uri: fullPath, input: input);
+      case RequestType.patch:
+        if (input.baseURL.isNotEmpty && input.path.isNotEmpty) {
+          fullPath = Uri.parse(input.fullPath);
+        }
+        return dioPatch(uri: fullPath, input: input);
     }
   }
 
@@ -172,6 +177,26 @@ class APIProvider {
   }
 
   Future<Response> dioDelete({Uri? uri, InputServiceInterface? input}) async {
+    Response response;
+    try {
+      if (uri != null) {
+        response = await dio.patchUri(uri,
+            data: input?.formData ?? input?.queryParameters);
+      } else {
+        response = await dio.patch(input!.path,
+            data: input.formData ?? input.queryParameters);
+      }
+      return Future.value(response);
+    } on DioError catch (e) {
+      return Future.error(AppError(
+          requestOptions: e.requestOptions,
+          response: e.response,
+          error: e.error,
+          type: e.type));
+    }
+  }
+
+  Future<Response> dioPatch({Uri? uri, InputServiceInterface? input}) async {
     Response response;
     try {
       if (uri != null) {

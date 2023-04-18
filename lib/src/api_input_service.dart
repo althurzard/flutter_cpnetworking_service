@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-enum RequestType { post, get, put, delete }
+enum RequestType { post, get, put, delete, patch }
 
 abstract class BaseAPIServiceInterface {
   late Map<String, String> headers;
