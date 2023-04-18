@@ -180,10 +180,10 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await dio.patchUri(uri,
+        response = await dio.deleteUri(uri,
             data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await dio.patch(input!.path,
+        response = await dio.delete(input!.path,
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
@@ -200,10 +200,10 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await dio.deleteUri(uri,
+        response = await dio.patchUri(uri,
             data: input?.formData ?? input?.queryParameters);
       } else {
-        response = await dio.delete(input!.path,
+        response = await dio.patch(input!.path,
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);

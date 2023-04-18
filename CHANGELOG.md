@@ -58,3 +58,10 @@ Cannot use secure storage during running tests
 ## 0.2.0
 - Upgrade flutter
 - Refactor AppError
+
+## 0.2.1
+- Upgrade flutter
+- Implement PATCH request
+
+## 0.2.2
+- Fix mistake
