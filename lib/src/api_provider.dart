@@ -69,7 +69,7 @@ class APIProvider {
     return handler.next(options);
   }
 
-  void _onError(DioError err, ErrorInterceptorHandler handler) {
+  void _onError(DioException err, ErrorInterceptorHandler handler) {
     // TODO: handle refresh token
     return handler.next(err);
   }
@@ -121,13 +121,19 @@ class APIProvider {
     Response response;
     try {
       if (uri != null) {
-        response = await dio.getUri(uri);
+        response = await dio.getUri(
+          uri,
+          onReceiveProgress: input?.onReceiveProgress,
+        );
       } else {
-        response =
-            await dio.get(input!.path, queryParameters: input.queryParameters);
+        response = await dio.get(
+          input!.path,
+          queryParameters: input.queryParameters,
+          onReceiveProgress: input.onReceiveProgress,
+        );
       }
       return Future.value(response);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -141,13 +147,17 @@ class APIProvider {
     try {
       if (uri != null) {
         response = await dio.postUri(uri,
-            data: input?.formData ?? input?.queryParameters);
+            data: input?.formData ?? input?.queryParameters,
+            onReceiveProgress: input?.onReceiveProgress,
+            onSendProgress: input?.onSendProgress);
       } else {
         response = await dio.post(input!.path,
-            data: input.formData ?? input.queryParameters);
+            data: input.formData ?? input.queryParameters,
+            onReceiveProgress: input.onReceiveProgress,
+            onSendProgress: input.onSendProgress);
       }
       return Future.value(response);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -161,13 +171,17 @@ class APIProvider {
     try {
       if (uri != null) {
         response = await dio.putUri(uri,
-            data: input?.formData ?? input?.queryParameters);
+            data: input?.formData ?? input?.queryParameters,
+            onReceiveProgress: input?.onReceiveProgress,
+            onSendProgress: input?.onSendProgress);
       } else {
         response = await dio.put(input!.path,
-            data: input.formData ?? input.queryParameters);
+            data: input.formData ?? input.queryParameters,
+            onReceiveProgress: input.onReceiveProgress,
+            onSendProgress: input.onSendProgress);
       }
       return Future.value(response);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -187,7 +201,7 @@ class APIProvider {
             data: input.formData ?? input.queryParameters);
       }
       return Future.value(response);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -201,13 +215,17 @@ class APIProvider {
     try {
       if (uri != null) {
         response = await dio.patchUri(uri,
-            data: input?.formData ?? input?.queryParameters);
+            data: input?.formData ?? input?.queryParameters,
+            onReceiveProgress: input?.onReceiveProgress,
+            onSendProgress: input?.onSendProgress);
       } else {
         response = await dio.patch(input!.path,
-            data: input.formData ?? input.queryParameters);
+            data: input.formData ?? input.queryParameters,
+            onReceiveProgress: input.onReceiveProgress,
+            onSendProgress: input.onSendProgress);
       }
       return Future.value(response);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -221,9 +239,7 @@ class APIProvider {
 
   String cURLRepresentation(RequestOptions options) {
     var components = <String>['\$ curl -i'];
-    if (options.method.toUpperCase() == 'GET') {
-      components.add('-X ${options.method}');
-    }
+    components.add('-X ${options.method.toUpperCase()}');
 
     options.headers.forEach((k, v) {
       if (k != 'Cookie') {

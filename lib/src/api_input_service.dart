@@ -14,6 +14,8 @@ abstract class InputServiceInterface extends BaseAPIServiceInterface {
   String get fullPath => '$baseURL$path';
   Map<String, dynamic>? queryParameters;
   FormData? formData;
+  void Function(int, int)? onSendProgress;
+  void Function(int, int)? onReceiveProgress;
 }
 
 class DefaultInputService implements InputServiceInterface {
@@ -42,6 +44,8 @@ class DefaultInputService implements InputServiceInterface {
       this.path = '',
       this.requestType = RequestType.get,
       this.queryParameters,
+      this.onReceiveProgress,
+      this.onSendProgress,
       this.formData});
 
   @override
@@ -49,4 +53,10 @@ class DefaultInputService implements InputServiceInterface {
 
   @override
   FormData? formData;
+
+  @override
+  void Function(int p1, int p2)? onReceiveProgress;
+
+  @override
+  void Function(int p1, int p2)? onSendProgress;
 }

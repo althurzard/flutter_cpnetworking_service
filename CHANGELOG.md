@@ -65,3 +65,6 @@ Cannot use secure storage during running tests
 
 ## 0.2.2
 - Fix mistake
+
+## 0.2.3
+- Upgrade libs
