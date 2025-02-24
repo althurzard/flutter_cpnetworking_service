@@ -68,3 +68,7 @@ Cannot use secure storage during running tests
 
 ## 0.2.3
 - Upgrade libs
+
+## 1.0.0
+- Upgrade libs
+- Refactor code
