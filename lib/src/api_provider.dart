@@ -132,8 +132,10 @@ class APIProvider {
           onReceiveProgress: input.onReceiveProgress,
         );
       }
+      print('done');
       return Future.value(response);
     } on DioException catch (e) {
+      print(e);
       return Future.error(AppError(
           requestOptions: e.requestOptions,
           response: e.response,
@@ -224,6 +226,7 @@ class APIProvider {
             onReceiveProgress: input.onReceiveProgress,
             onSendProgress: input.onSendProgress);
       }
+
       return Future.value(response);
     } on DioException catch (e) {
       return Future.error(AppError(
@@ -242,9 +245,7 @@ class APIProvider {
     components.add('-X ${options.method.toUpperCase()}');
 
     options.headers.forEach((k, v) {
-      if (k != 'Cookie') {
-        components.add('-H \"$k: $v\"');
-      }
+      components.add('-H \"$k: $v\"');
     });
 
     if (options.data is FormData) {
